@@ -3,7 +3,7 @@ const inquirer = require('inquirer');
 
 const db = require("./db");
 require('dotenv').config();
-const connect = require("./db/connect");
+const connection = require("./db/connect");
 
 
 function questions(){
@@ -239,9 +239,10 @@ function questions(){
 
 }
 
-connect.connect(function(err) {
+connection.connect(function(err) {
     if (err) throw err;
-});
+
+})
 
 
 
