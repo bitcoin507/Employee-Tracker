@@ -175,9 +175,9 @@ function questions(){
         ]) 
     
         .then ((answers) => {   
-            console.log(answers.role_pick)
+            console.log(answers.employee_role_pick)
             console.log(answers.employee_pick)
-            updateEmployeeRole(answers.role_pick,answers.employee_pick)
+            updateEmployeeRole(answers.employee_role_pick,answers.employee_pick)
 
             questions()
         })
@@ -209,7 +209,7 @@ function questions(){
             
             for (i=0; i< results.length; i++){
                 let popped_name = temp_pushlist.pop()
-                all_roles.push(popped_name)
+                all_employee_roles.push(popped_name)
             }
             
 
