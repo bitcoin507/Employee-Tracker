@@ -1,7 +1,7 @@
 INSERT INTO department (department_name)
 VALUES ("Bricolaje"), 
 ("Carpinteria"), 
-("Electricidad"), 
+("Electrodomesticos"), 
 ("Pintura"), 
 ("Plomeria"), 
 ("Cerrajeria"), 
