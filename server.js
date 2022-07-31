@@ -3,7 +3,7 @@ const inquirer = require('inquirer');
 
 const db = require("./db");
 require('dotenv').config();
-const connection = require("./db/connect");
+const connection = require("./db/connection");
 
 
 function questions(){
