@@ -6,7 +6,7 @@ require('dotenv').config();
 const connection = require("./db/connection");
 
 
-questions();
+
 
 function questions(){
 
