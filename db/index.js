@@ -12,7 +12,7 @@ class Database {
     
     viewAllRoles = () => {
         return this.connection.promise().query(
-            `select title as job_title, employee_role.id AS employee_role_id, department.name AS department_name,salary from employee_role 
+            `SELECT title as job_title, employee_role.id AS employee_role_id, department.name AS department_name,salary from employee_role 
             JOIN department ON department.id = department_id 
             ORDER BY  department.name;`
         )
@@ -22,7 +22,7 @@ class Database {
 
     viewAllDepartments = () => {
         return this.connection.promise().query(
-            `Select name, id from department;`
+            `SELECT name, id from department;`
         );
     }
 
