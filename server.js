@@ -163,7 +163,7 @@ let updateEmployeeResponse = () =>{
     })
 }
 
-/*
+
 let viewAllDepartments =() =>{
     db.query('SELECT * FROM department ', function (err, results) {
         for (i=0; i< results.length; i++){
@@ -203,7 +203,7 @@ let viewAllEmployees =() =>{
         }
     });
 }
-*/
+
 connection.connect(function(err) {
     if (err) throw err;
 })
