@@ -15,10 +15,10 @@ class Database {
 
     viewAllDepartments = () => {
         return this.connection.promise().query(
-            `Select name, id from department;`
-        );
-    }
-
+            `SELECT name, id from department;`
+    );
+        };
+        
     viewAllEmployees = () => {
         return this.connection.promise().query(
             `SELECT employee.id, employee.first_name, employee.last_name, employee_role.title, 
