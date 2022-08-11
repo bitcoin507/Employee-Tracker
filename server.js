@@ -1,4 +1,5 @@
 const inquirer = require('inquirer');
+const { addEmployee } = require('./db');
 
 const db = require("./db");
 require('dotenv').config();
@@ -23,30 +24,38 @@ function questions() {
                 questions()
                 
             }if (answer.menu == "View All Roles"){        
-                viewAllRoles()
+                db.viewAllRoles()
                 questions()
                 
             }if (answer.menu == "View All Department"){
-                viewAllDepartments()    
+                db.viewAllDepartments()    
                 questions()
 
             }if (answer.menu == "Add Employee"){
-                renderAllEmployees()
-                renderAllRoles()
-                addEmployeeResponse()
+                db.viewAllEmployees()
+                db.viewAllRoles()
+                db.viewAllDepartments()
+                addEmployee()
+                questions()
 
             }if (answer.menu == "Add Role"){       
-                renderAllDepartments()
-                addRoleResponse()
+                db.viewAllDepartments()
+                addRole()
+                questions()
+                
                 
             }if (answer.menu == "Add Department"){
-                addDepartment_response()
+                db.viewAllDepartments()
+                addDepartment()
+                questions()
+                
     
             }if (answer.menu == "Update Employee Role"){
-                renderAllEmployees()
-                renderAllRoles()
-        
-                updateEmployeeResponse()
+                db.viewAllEmployees()
+                db.viewAllRoles()
+                updateEmployee()
+                questions()
+                
             }
             if (answer.menu == "Exit"){
                 process.exit();

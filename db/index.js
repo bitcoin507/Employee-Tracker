@@ -25,8 +25,8 @@ class Database {
             department.department_name , employee_role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager 
             
             from employee 
-            LEFT JOIN employee_role on employee.role_id = employee_role.id 
-            LEFT JOIN department on employee_role.department_id = department.id LEFT join employee manager on manager.id = employee.manager_id;`
+            INNER JOIN employee_role on employee.role_id = employee_role.id 
+            LEDFT JOIN department on employee_role.department_id = department.id LEFT join employee manager on manager.id = employee.manager_id;`
         )
     }
 
