@@ -18,7 +18,7 @@ class Database {
                         ORDER BY  department.department_name;`
         )
     }
-​
+
     viewAllDepartments = () => {
         return this.connection.promise().query(
             `SELECT department_name, id from department;`
