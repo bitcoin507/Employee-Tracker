@@ -35,23 +35,23 @@ class Database {
             LEFT JOIN department on employee_role.department_id = department.id LEFT join employee manager on manager.id = employee.manager_id;`
         )
     }
-​
+
     addDepartment = (department) => {
         return this.connection.promise().query("INSERT INTO department SET ?", department)
     }
-​
+
     addRole = (employee_role) => {
         return this.connection.promise().query("INSERT INTO role SET ?", employee_role)
     }
-​
+
     addEmployee = (employee) => {
         return this.connection.promise().query("INSERT INTO employee SET ?", employee)
     }
-​
+
     getAllManagers = () => {
         return this.connection.promise().query(`SELECT * FROM manager`)
     }
-​
+
     updateEmployeeRole = (employee_id, employee_role_id) => {
        return this.connect.promise().query(
             `UPDATE employee SET employee_role_id = ? WHERE id = ?`,
@@ -59,5 +59,5 @@ class Database {
         )
     }
 }
-​
+
 module.exports = new Database(connection);
