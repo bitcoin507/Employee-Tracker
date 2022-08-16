@@ -1,10 +1,10 @@
 const inquirer = require('inquirer');
 const { addEmployee } = require('./db');
-​
+
 const db = require("./db");
 require('dotenv').config();
 const connection = require("./db/connection");
-​
+
 function questions() {
     
     const all_departments=[];
@@ -45,14 +45,14 @@ function questions() {
                     console.table(departments);
                     })
                     .then(() => questions());
-​
+
             }if (answer.menu == "Add Employee"){
                 db.viewAllEmployees()
                 db.viewAllRoles()
                 db.viewAllDepartments()
                 addEmployee()
                 questions()
-​
+
             }if (answer.menu == "Add Role"){       
                 db.viewAllDepartments()
                 addRole()
@@ -77,7 +77,7 @@ function questions() {
             }
         })
 }
-​
+
 let addDepartment_response  = () =>{
     
     inquirer.prompt([
@@ -87,13 +87,13 @@ let addDepartment_response  = () =>{
             message: "Enter department name",
         },
     ]) 
-​
+
     .then ((answers) => {
         addDepartment(answers.add_name)
         questions()
     })
 }
-​
+
 let addRoleResponse  = () =>{
     
     inquirer.prompt([
@@ -124,7 +124,7 @@ let addRoleResponse  = () =>{
         });
     })
 }
-​
+
 let addEmployeeResponse  = () =>{
     
     inquirer.prompt([
@@ -153,12 +153,11 @@ let addEmployeeResponse  = () =>{
     ]).then ((answers) => {   
               
         addEmployee(answers.add_firstname, answers.add_lastname, answers.add_employeerole, answers.add_employeemanager)    
-​
+
         questions()  
     })
 }
-​
-​
+
 let updateEmployeeResponse = () =>{ 
     inquirer.prompt([
         {
@@ -182,12 +181,11 @@ let updateEmployeeResponse = () =>{
         console.log(answers.employee_role_pick)
         console.log(answers.employee_pick)
         updateEmployeeRole(answers.employee_role_pick,answers.employee_pick)
-​
+
         questions()
     })
 }
-​
-​
+
 let viewAllDepartments =() =>{
     db.query('SELECT * FROM department ', function (err, results) {
         for (i=0; i< results.length; i++){
@@ -195,7 +193,7 @@ let viewAllDepartments =() =>{
         }
 });
 }
-​
+
 let viewAllRoles =() =>{
     db.query('SELECT id as value, job_title as name FROM employee_role ', function (err, results) {
     
@@ -211,7 +209,7 @@ let viewAllRoles =() =>{
         } 
     });
 }
-​
+
 let viewAllEmployees =() =>{
     db.query("SELECT id as value, CONCAT(first_name, ' ', last_name) as name FROM employee", function (err, results) {  
     
@@ -227,9 +225,9 @@ let viewAllEmployees =() =>{
         }
     });
 }
-​
+
 connection.connect(function(err) {
     if (err) throw err;
 })
-​
+
 questions();

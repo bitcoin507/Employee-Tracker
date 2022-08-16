@@ -1,5 +1,5 @@
 const connection = require("./connection");
-
+​
 class Database {
     constructor(connection) {
         this.connection = connection;
@@ -7,15 +7,21 @@ class Database {
     
     viewAllRoles = () => {
         return this.connection.promise().query(
-            `select title as job_title, employee_role.id AS employee_role_id, department.name AS department_name,salary from employee_role 
-            JOIN department ON department.id = department_id 
-            ORDER BY  department.name;`
+            `select 
+            title as job_title, 
+            employee_role.id AS employee_role_id, 
+            department.department_name, 
+            salary 
+            
+            from employee_role 
+                        JOIN department ON department.id = employee_role.department_id 
+                        ORDER BY  department.department_name;`
         )
     }
-
+​
     viewAllDepartments = () => {
         return this.connection.promise().query(
-            `SELECT name, id from department;`
+            `SELECT department_name, id from department;`
     );
         };
         
@@ -26,26 +32,26 @@ class Database {
             
             from employee 
             INNER JOIN employee_role on employee.role_id = employee_role.id 
-            LEDFT JOIN department on employee_role.department_id = department.id LEFT join employee manager on manager.id = employee.manager_id;`
+            LEFT JOIN department on employee_role.department_id = department.id LEFT join employee manager on manager.id = employee.manager_id;`
         )
     }
-
+​
     addDepartment = (department) => {
         return this.connection.promise().query("INSERT INTO department SET ?", department)
     }
-
+​
     addRole = (employee_role) => {
         return this.connection.promise().query("INSERT INTO role SET ?", employee_role)
     }
-
+​
     addEmployee = (employee) => {
         return this.connection.promise().query("INSERT INTO employee SET ?", employee)
     }
-
+​
     getAllManagers = () => {
         return this.connection.promise().query(`SELECT * FROM manager`)
     }
-
+​
     updateEmployeeRole = (employee_id, employee_role_id) => {
        return this.connect.promise().query(
             `UPDATE employee SET employee_role_id = ? WHERE id = ?`,
@@ -53,5 +59,5 @@ class Database {
         )
     }
 }
-
+​
 module.exports = new Database(connection);
