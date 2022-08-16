@@ -1,57 +1,235 @@
-const connection = require("./connection");
-
-class Database {
-    constructor(connection) {
-        this.connection = connection;
-    }
+const inquirer = require('inquirer');
+const { addEmployee } = require('./db');
+​
+const db = require("./db");
+require('dotenv').config();
+const connection = require("./db/connection");
+​
+function questions() {
     
-    viewAllRoles = () => {
-        return this.connection.promise().query(
-            `select title as job_title, employee_role.id AS employee_role_id, department.name AS department_name,salary from employee_role 
-            JOIN department ON department.id = department_id 
-            ORDER BY  department.name;`
-        )
-    }
-
-    viewAllDepartments = () => {
-        return this.connection.promise().query(
-            `SELECT name, id from department;`
-    );
-        };
+    const all_departments=[];
+    const all_roles=[];
+    const all_employees=[{value:0, name:"NONE"}];
+    
+    inquirer.prompt([
+        {
+            name:"menu",
+            type: "list",
+            message: "Choose an option",
+            choices: ["View All Employees","View All Roles","View All Department","Add Employee", "Add Role","Add Department","Update Employee Role","Exit"],
+        }
+        ]).then((answer) => {
+            if (answer.menu == "View All Employees"){
+                db.viewAllEmployees()
+                    .then(([rows]) => {
+                    let employees = rows;
+                    console.log("\n");
+                    console.table(employees);
+                    })
+                    .then(() => questions());
         
-    viewAllEmployees = () => {
-        return this.connection.promise().query(
-            `SELECT employee.id, employee.first_name, employee.last_name, employee_role.title, 
-            department.department_name , employee_role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager 
-            
-            from employee 
-            INNER JOIN employee_role on employee.role_id = employee_role.id 
-            LEDFT JOIN department on employee_role.department_id = department.id LEFT join employee manager on manager.id = employee.manager_id;`
-        )
-    }
-
-    addDepartment = (department) => {
-        return this.connection.promise().query("INSERT INTO department SET ?", department)
-    }
-
-    addRole = (employee_role) => {
-        return this.connection.promise().query("INSERT INTO role SET ?", employee_role)
-    }
-
-    addEmployee = (employee) => {
-        return this.connection.promise().query("INSERT INTO employee SET ?", employee)
-    }
-
-    getAllManagers = () => {
-        return this.connection.promise().query(`SELECT * FROM manager`)
-    }
-
-    updateEmployeeRole = (employee_id, employee_role_id) => {
-       return this.connect.promise().query(
-            `UPDATE employee SET employee_role_id = ? WHERE id = ?`,
-            [ employee_id,employee_role_id]
-        )
-    }
+            }if (answer.menu == "View All Roles"){        
+                db.viewAllRoles()
+                .then(([rows]) => {
+                    let roles = rows;
+                    console.log("\n");
+                    console.table(roles);
+                    })
+                    .then(() => questions());
+                
+            }if (answer.menu == "View All Department"){
+                db.viewAllDepartments()    
+                .then(([rows]) => {
+                    let departments = rows;
+                    console.log("\n");
+                    console.table(departments);
+                    })
+                    .then(() => questions());
+​
+            }if (answer.menu == "Add Employee"){
+                db.viewAllEmployees()
+                db.viewAllRoles()
+                db.viewAllDepartments()
+                addEmployee()
+                questions()
+​
+            }if (answer.menu == "Add Role"){       
+                db.viewAllDepartments()
+                addRole()
+                questions()
+                
+                
+            }if (answer.menu == "Add Department"){
+                db.viewAllDepartments()
+                addDepartment()
+                questions()
+                
+    
+            }if (answer.menu == "Update Employee Role"){
+                db.viewAllEmployees()
+                db.viewAllRoles()
+                updateEmployee()
+                questions()
+                
+            }
+            if (answer.menu == "Exit"){
+                process.exit();
+            }
+        })
 }
-
-module.exports = new Database(connection);
+​
+let addDepartment_response  = () =>{
+    
+    inquirer.prompt([
+        {
+            name:"add_name",
+            type: "input",
+            message: "Enter department name",
+        },
+    ]) 
+​
+    .then ((answers) => {
+        addDepartment(answers.add_name)
+        questions()
+    })
+}
+​
+let addRoleResponse  = () =>{
+    
+    inquirer.prompt([
+        {
+            name:"add_name",
+            type: "input",
+            message: "Enter employee role",
+        },
+        {
+            name:"add_salary",
+            type: "input",
+            message: "Enter employee salary",
+        },
+        {
+            name:"add_department",
+            type: "list",
+            message: "Which department does the role belong to?",
+            choices: all_departments,
+        },
+    ]) .then ((answers) => {
+        db.query('SELECT * FROM department ', function (err, results) {
+            for (i=0; i< results.length; i++){
+            if(results[i].department_name == answers.add_department){
+                department_id=results[i].id
+                addRole(answers.add_name, answers.add_salary, department_id)
+                questions()
+            }}
+        });
+    })
+}
+​
+let addEmployeeResponse  = () =>{
+    
+    inquirer.prompt([
+        {
+            name:"add_firstname",
+            type: "input",
+            message: "What is the employee's first name?"
+        },
+        {
+            name:"add_lastname",
+            type: "input",
+            message: "What is the employee's last name?"
+        },
+        {
+            name:"add_employeeRole",
+            type: "list",
+            message: "Choose the employee's  role",
+            choices: all_roles,
+        },
+        {
+            name:"add_employeeManager",
+            type: "list",
+            message: "Choose the employee's manager",
+            choices: all_employees,
+        },
+    ]).then ((answers) => {   
+              
+        addEmployee(answers.add_firstname, answers.add_lastname, answers.add_employeerole, answers.add_employeemanager)    
+​
+        questions()  
+    })
+}
+​
+​
+let updateEmployeeResponse = () =>{ 
+    inquirer.prompt([
+        {
+            name:"update_reference",
+            type: "input",
+            message: "Enter the update reference?",
+        },
+        {
+            name: "update_role",
+            type: "list",
+            message: "Which employee's role do you want to update?",
+            choices: all_employees,
+        },
+        {
+            name:"new_role",
+            type: "list",
+            message: "Which new role do you want to assign the selected employee?",
+            choices: all_roles,
+        },
+    ]) .then ((answers) => {   
+        console.log(answers.employee_role_pick)
+        console.log(answers.employee_pick)
+        updateEmployeeRole(answers.employee_role_pick,answers.employee_pick)
+​
+        questions()
+    })
+}
+​
+​
+let viewAllDepartments =() =>{
+    db.query('SELECT * FROM department ', function (err, results) {
+        for (i=0; i< results.length; i++){
+            all_departments.push(results[i].department_name)
+        }
+});
+}
+​
+let viewAllRoles =() =>{
+    db.query('SELECT id as value, job_title as name FROM employee_role ', function (err, results) {
+    
+        let temp_pushlist=[];
+                
+        for(i=0; i< results.length; i++){
+            temp_pushlist.push(results[i])
+        }
+        
+        for (i=0; i< results.length; i++){
+            let popped_name = temp_pushlist.pop()
+            all_employee_roles.push(popped_name)
+        } 
+    });
+}
+​
+let viewAllEmployees =() =>{
+    db.query("SELECT id as value, CONCAT(first_name, ' ', last_name) as name FROM employee", function (err, results) {  
+    
+        let employeeList=[];
+        
+        for(i=0; i< results.length; i++){
+            employeeList.push(results[i])
+        }
+        
+        for (i=0; i< results.length; i++){
+            let popped_name = employeeList.pop()
+            all_employees.push(popped_name)
+        }
+    });
+}
+​
+connection.connect(function(err) {
+    if (err) throw err;
+})
+​
+questions();
